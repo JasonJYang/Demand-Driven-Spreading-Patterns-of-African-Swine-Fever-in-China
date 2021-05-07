@@ -4,6 +4,7 @@ Created on Wed Apr 21 13:59:46 2021
 
 @author: Jason
 """
+import os
 import pickle
 import numpy as np
 import pandas as pd
@@ -11,7 +12,7 @@ import networkx as nx
 from geopy.distance import great_circle
 
 # load data
-capital_df = pd.read_excel('../data/province_capital.xlsx')
+capital_df = pd.read_excel('../data/province_capital v2.xlsx')
 province_map_df = pd.read_excel('../data/code.xlsx')
 trafic_dist_df = pd.read_excel('../data/distance_all.xlsx')
 slaughter_house_df = pd.read_csv('../data/sla_result.csv')
@@ -75,23 +76,29 @@ for i in range(31):
     demand_list = []
     for j in range(31):
         if import_list[i] < 0 and import_list[j] > 0:
-            d = trafic_dist_array_full[i,j] / np.log(slaughter_house_array_full[i,j]/\
-                np.exp(import_list[i]+import_list[j]))
-        elif import_list[i] < 0:
-            d = trafic_dist_array_full[i,j] / np.log(slaughter_house_array_full[i,j])
+            d = trafic_dist_array_full[i,j] / np.log(slaughter_house_array_full[i,j]*\
+                np.exp(np.abs(import_list[i])+np.abs(import_list[j])))
         else:
-            d = trafic_dist_array_full[i,j]
+            d = trafic_dist_array_full[i,j] / np.log(slaughter_house_array_full[i,j])
+                # elif import_list[i] < 0 and import_list[j] <= 0:
+        #     d = trafic_dist_array_full[i,j] / np.log(slaughter_house_array_full[i,j])
+        # else:
+        #     d = trafic_dist_array_full[i,j]
         demand_list.append(d)
     demand_dist_list.append(demand_list)
 demand_dist_array = np.array(demand_dist_list)
+# minimum distance between two array
+demand_dist_array = np.minimum(demand_dist_array, trafic_dist_array_full)
 
-with open('../data/processed/natural_distance_array.pkl', 'wb') as f:
+
+save_path = '../data/processed/re-kaichen-change'
+with open(os.path.join(save_path, 'natural_distance_array.pkl'), 'wb') as f:
     pickle.dump(natural_dist_array, f)
     
-with open('../data/processed/transportation_distance_array.pkl', 'wb') as f:
+with open(os.path.join(save_path, 'transportation_distance_array.pkl'), 'wb') as f:
     pickle.dump(trafic_dist_array_full, f)
     
-with open('../data/processed/demand-adjusted_distance_array.pkl', 'wb') as f:
+with open(os.path.join(save_path, 'demand-adjusted_distance_array.pkl'), 'wb') as f:
     pickle.dump(demand_dist_array, f)
         
     
