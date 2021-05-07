@@ -96,13 +96,13 @@ print('natural', sum(natural_dist_result_pd['rank']))
 print('travel', sum(travel_dist_result_pd['rank']))
 print('demand', sum(demand_dist_result_pd['rank']))
 
-# save_path = '../result/re-kaichen-change'
-# natural_dist_result_pd.to_csv(os.path.join(save_path, 'res_NDS.csv'), 
-#                               index=False, encoding='utf_8_sig')
-# travel_dist_result_pd.to_csv(os.path.join(save_path, 'res_TDS.csv'), 
-#                              index=False, encoding='utf_8_sig')
-# demand_dist_result_pd.to_csv(os.path.join(save_path, 'res_DaTDS.csv'), 
-#                              index=False, encoding='utf_8_sig')
+save_path = '../result/re-kaichen-change'
+natural_dist_result_pd.to_csv(os.path.join(save_path, 'res_NDS.csv'), 
+                              index=False, encoding='utf_8_sig')
+travel_dist_result_pd.to_csv(os.path.join(save_path, 'res_TDS.csv'), 
+                             index=False, encoding='utf_8_sig')
+demand_dist_result_pd.to_csv(os.path.join(save_path, 'res_DaTDS.csv'), 
+                             index=False, encoding='utf_8_sig')
 
 se = ['江苏', '上海', '浙江', '福建', '江西', '安徽', '广东', '广西', '海南']
 print('SE-natural', sum(natural_dist_result_pd[natural_dist_result_pd['province'].isin(
@@ -111,10 +111,5 @@ print('SE-travel', sum(travel_dist_result_pd[travel_dist_result_pd['province'].i
     se)]['rank'])/3)
 print('SE-demand', sum(demand_dist_result_pd[demand_dist_result_pd['province'].isin(
     se)]['rank'])/3)
-
-# t-test
-from scipy import stats
-(statistic, pvalue) = stats.ttest_ind(demand_dist_result_pd['rank'], 
-                                      natural_dist_result_pd['rank'])
 
 
